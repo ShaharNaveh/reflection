@@ -93,6 +93,8 @@ pub enum ProtocolOpts {
 }
 
 impl ProtocolOpts {
+    pub const PROTOCOLS: [Self; 4] = [Self::Ftp, Self::Http, Self::Https, Self::Rsync];
+
     pub fn to_str(&self) -> &'static str {
         match self {
             Self::Ftp => "ftp",

@@ -18,15 +18,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let completion_pct: f32 = filter_opts.completion_percent as f32 / 100.0;
 
-    let wanted_protocols: Vec<ProtocolOpts> = if filter_opts.protocol.is_none() {
-        vec![
-            ProtocolOpts::Ftp,
-            ProtocolOpts::Http,
-            ProtocolOpts::Https,
-            ProtocolOpts::Rsync,
-        ]
-    } else {
-        filter_opts.protocol.as_ref().unwrap().to_vec()
+    let wanted_protocols = match &filter_opts.protocol {
+        Some(v) => v.to_vec(),
+        _ => ProtocolOpts::PROTOCOLS.to_vec(),
     };
 
     let protocols: Vec<&str> = wanted_protocols.into_iter().map(|x| x.to_str()).collect();
