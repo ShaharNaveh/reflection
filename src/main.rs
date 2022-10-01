@@ -18,12 +18,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let completion_pct: f32 = filter_opts.completion_percent as f32 / 100.0;
 
-    let wanted_protocols = match &filter_opts.protocol {
-        Some(v) => v.to_vec(),
-        _ => ProtocolOpts::PROTOCOLS.to_vec(),
-    };
-
-    let protocols = wanted_protocols
+    let protocols = &filter_opts
+        .protocol
+        .as_ref()
+        .unwrap_or(&ProtocolOpts::PROTOCOLS.to_vec())
+        .to_vec()
         .into_iter()
         .map(|x| x.to_string())
         .collect::<Vec<String>>();
