@@ -5,14 +5,14 @@ mod cli;
 mod types;
 
 use crate::{
-    cli::{Opt, ProtocolOpts},
+    cli::{Cli, ProtocolOpts},
     types::{MirrorMetadata, MirrorStatus},
 };
 
 const API_URL: &str = "https://archlinux.org/mirrors/status/json/";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Opt::parse();
+    let args = Cli::parse();
 
     let filter_opts = &args.filter_opts;
 
