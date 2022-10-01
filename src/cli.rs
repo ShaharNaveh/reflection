@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use clap::{Args, Parser, ValueEnum};
 
 /// retrieve and filter a list of the latest Arch Linux mirrors
-#[derive(Parser, Debug)]
+#[derive(Parser)]
 #[command(name = "rflector")] // TODO: Find a better name
 #[command(about = "FOO BAR BAZ")]
 #[command(version = "0.0.1")]
@@ -57,7 +57,7 @@ pub struct Cli {
     pub filter_opts: FilterOpts,
 }
 
-#[derive(Args, Debug)]
+#[derive(Args)]
 pub struct FilterOpts {
     /// Only return mirrors that have synchronized in the last n hours. n may be an integer or a decimal number
     #[arg(short, long, value_name = "n", hide = true)]
@@ -87,7 +87,7 @@ pub struct FilterOpts {
     pub protocol: Option<Vec<ProtocolOpts>>,
 }
 
-#[derive(ValueEnum, Clone, Debug)]
+#[derive(ValueEnum, Clone)]
 pub enum ProtocolOpts {
     Ftp,
     Http,
@@ -97,14 +97,17 @@ pub enum ProtocolOpts {
 
 impl ProtocolOpts {
     pub const PROTOCOLS: [Self; 4] = [Self::Ftp, Self::Http, Self::Https, Self::Rsync];
+}
 
-    pub fn to_str(&self) -> &'static str {
-        match self {
+impl std::fmt::Display for ProtocolOpts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let protocol = match self {
             Self::Ftp => "ftp",
             Self::Http => "http",
             Self::Https => "https",
             Self::Rsync => "rsync",
-        }
+        };
+        write!(f, "{}", protocol)
     }
 }
 

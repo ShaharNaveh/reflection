@@ -23,7 +23,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         _ => ProtocolOpts::PROTOCOLS.to_vec(),
     };
 
-    let protocols: Vec<&str> = wanted_protocols.into_iter().map(|x| x.to_str()).collect();
+    let protocols = wanted_protocols
+        .into_iter()
+        .map(|x| x.to_string())
+        .collect::<Vec<String>>();
 
     let response = reqwest::blocking::get(API_URL)?;
     let data: MirrorStatus = response.json()?;
@@ -34,7 +37,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .into_iter()
         .filter(|x| x.active) // Get only active mirrors, should always?
         .filter(|x| x.completion_pct >= completion_pct)
-        .filter(|x| protocols.contains(&x.protocol.as_str()))
+        .filter(|x| protocols.contains(&x.protocol.to_string()))
         .collect::<Vec<MirrorMetadata>>();
 
     let mirrors_url: Vec<String> = fmirrors.into_iter().map(|x| x.url).collect();
