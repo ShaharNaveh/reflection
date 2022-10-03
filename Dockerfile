@@ -1,8 +1,16 @@
-FROM docker.io/library/debian:bullseye-slim AS sysprep
+FROM docker.io/library/rust:1.64.0-slim-bullseye AS chef
 
-RUN groupadd --system rflector && useradd --system --shell /bin/false --gid rflector rflector
+RUN cargo install cargo-chef
+WORKDIR /app/
 
-FROM docker.io/library/rust:1.64.0-slim-bullseye AS build-env
+
+FROM chef AS planner
+
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
+
+
+FROM chef AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -11,25 +19,25 @@ RUN apt update \
   libssl-dev \
   pkg-config
 
-WORKDIR /app/
+COPY --from=planner /app/recipe.json recipe.json
+RUN cargo chef cook --release --recipe-path recipe.json
 
-RUN mkdir ./src && echo 'fn main() { println!("Dummy!"); }' > ./src/main.rs
+COPY . .
+RUN cargo build --release --bin rflector
 
-COPY Cargo.toml Cargo.lock ./
-RUN cargo build --release
 
-RUN rm --recursive ./src/ ./target/release/
-COPY ./src ./src
-RUN \
-  touch -a -m ./src/main.rs \
-  && cargo build --release
+FROM docker.io/library/debian:bullseye-slim AS sysprep
 
-FROM gcr.io/distroless/cc:latest
+RUN groupadd --system rflector && useradd --system --shell /bin/false --gid rflector rflector
+
+
+FROM gcr.io/distroless/cc:latest AS runtime
 
 COPY --from=sysprep /etc/passwd /etc/passwd
 COPY --from=sysprep /etc/group /etc/group
 
-COPY --from=build-env --chown=rflector:rflector /app/target/release/rflector /usr/local/bin/
+COPY --from=builder --chown=rflector:rflector /app/target/release/rflector /usr/local/bin/
+
 USER rflector
 
 ENTRYPOINT ["/usr/local/bin/rflector"]
