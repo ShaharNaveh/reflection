@@ -2,44 +2,20 @@ use clap::Parser;
 use reqwest;
 
 mod cli;
+mod filters;
 mod types;
 
-use crate::{
-    cli::{Cli, ProtocolOpts},
-    types::{MirrorMetadata, MirrorStatus},
-};
-
-const API_URL: &str = "https://archlinux.org/mirrors/status/json/";
+use crate::{cli::CliOpts, filters::apply_filters, types::MirrorsStatus};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Cli::parse();
+    let args = CliOpts::parse();
+    dbg!("{:?}", &args);
 
-    let filter_opts = &args.filter_opts;
+    let response = reqwest::blocking::get(&args.url)?;
+    let data: MirrorsStatus = response.json()?;
 
-    let completion_pct: f32 = filter_opts.completion_percent as f32 / 100.0;
-
-    let protocols = &filter_opts
-        .protocol
-        .as_ref()
-        .unwrap_or(&ProtocolOpts::PROTOCOLS.to_vec())
-        .to_vec()
-        .into_iter()
-        .map(|x| x.to_string())
-        .collect::<Vec<String>>();
-
-    let response = reqwest::blocking::get(API_URL)?;
-    let data: MirrorStatus = response.json()?;
-
-    let mirrors_status = data.urls;
-
-    let fmirrors = mirrors_status
-        .into_iter()
-        .filter(|x| x.active) // Get only active mirrors, should always?
-        .filter(|x| x.completion_pct >= completion_pct)
-        .filter(|x| protocols.contains(&x.protocol.to_string()))
-        .collect::<Vec<MirrorMetadata>>();
-
-    let mirrors_url: Vec<String> = fmirrors.into_iter().map(|x| x.url).collect();
+    let fmirrors = apply_filters(&args.filter_opts, &data.urls);
+    let mirrors_url = fmirrors.into_iter().map(|x| x.url).collect::<Vec<String>>();
 
     Ok(())
 }

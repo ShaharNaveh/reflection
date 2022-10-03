@@ -3,12 +3,11 @@ use std::path::PathBuf;
 use clap::{Args, Parser, ValueEnum};
 
 /// retrieve and filter a list of the latest Arch Linux mirrors
-#[derive(Parser)]
+#[derive(Parser, Debug)]
 #[command(name = "rflector")] // TODO: Find a better name
-#[command(about = "FOO BAR BAZ")]
 #[command(version = "0.0.1")]
 #[command(next_line_help = true)]
-pub struct Cli {
+pub struct CliOpts {
     /// The number of seconds to wait before a connection times out
     #[arg(long, value_name = "n", default_value_t = 5, hide = true)]
     pub connection_timeout: usize,
@@ -57,7 +56,7 @@ pub struct Cli {
     pub filter_opts: FilterOpts,
 }
 
-#[derive(Args)]
+#[derive(Args, Debug)]
 pub struct FilterOpts {
     /// Only return mirrors that have synchronized in the last n hours. n may be an integer or a decimal number
     #[arg(short, long, value_name = "n", hide = true)]
@@ -87,16 +86,12 @@ pub struct FilterOpts {
     pub protocol: Option<Vec<ProtocolOpts>>,
 }
 
-#[derive(ValueEnum, Clone)]
+#[derive(Clone, Debug, ValueEnum)]
 pub enum ProtocolOpts {
     Ftp,
     Http,
     Https,
     Rsync,
-}
-
-impl ProtocolOpts {
-    pub const PROTOCOLS: [Self; 4] = [Self::Ftp, Self::Http, Self::Https, Self::Rsync];
 }
 
 impl std::fmt::Display for ProtocolOpts {

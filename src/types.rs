@@ -1,8 +1,8 @@
 use chrono;
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
 #[allow(dead_code)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct MirrorMetadata {
     pub url: String,
     pub protocol: String,
@@ -21,9 +21,9 @@ pub struct MirrorMetadata {
     pub details: String,
 }
 
-#[derive(Deserialize, Debug)]
 #[allow(dead_code)]
-pub struct MirrorStatus {
+#[derive(Clone, Deserialize, Debug)]
+pub struct MirrorsStatus {
     pub cutoff: usize,
     pub last_check: chrono::DateTime<chrono::Utc>,
     pub num_checks: usize,
@@ -31,3 +31,5 @@ pub struct MirrorStatus {
     pub urls: Vec<MirrorMetadata>,
     pub version: usize,
 }
+
+impl MirrorsStatus {}
