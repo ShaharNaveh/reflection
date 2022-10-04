@@ -31,5 +31,3 @@ pub struct MirrorsStatus {
     pub urls: Vec<MirrorMetadata>,
     pub version: usize,
 }
-
-impl MirrorsStatus {}

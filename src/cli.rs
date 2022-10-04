@@ -59,7 +59,7 @@ pub struct CliOpts {
 #[derive(Args, Debug)]
 pub struct FilterOpts {
     /// Only return mirrors that have synchronized in the last n hours. n may be an integer or a decimal number
-    #[arg(short, long, value_name = "n", hide = true)]
+    #[arg(short, long, value_name = "n")]
     pub age: Option<f64>,
 
     /// Only return mirrors with a reported sync delay of n hours or less, where n is a float. For example. to limit the results to mirrors with a reported delay of 15 minute or less, pass 0.25.

@@ -5,7 +5,7 @@ mod cli;
 mod filters;
 mod types;
 
-use crate::{cli::CliOpts, filters::apply_filters, types::MirrorsStatus};
+use crate::{cli::CliOpts, filters::Filters, types::MirrorsStatus};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = CliOpts::parse();
@@ -13,8 +13,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let response = reqwest::blocking::get(&args.url)?;
     let data: MirrorsStatus = response.json()?;
+    //dbg!("{:#?}", &data);
 
-    let fmirrors = apply_filters(&args.filter_opts, &data.urls);
+    let fmirrors = Filters::new(data.urls).apply_filters(&args.filter_opts);
+
     let mirrors_url = fmirrors.into_iter().map(|x| x.url).collect::<Vec<String>>();
 
     Ok(())
