@@ -31,10 +31,8 @@ impl Filters {
     fn filter_age(&mut self, age: f64) {
         let utc = chrono::Utc::now();
 
-        let age = age as i64;
-
         self.0.retain(|x| match &x.last_sync {
-            Some(v) => age >= utc.signed_duration_since(*v).num_hours(),
+            Some(v) => (age * 60.0 * 60.0) as i64 >= utc.signed_duration_since(*v).num_seconds(),
             None => false,
         })
     }
