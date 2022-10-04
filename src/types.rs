@@ -1,11 +1,11 @@
-use chrono;
+use clap::ValueEnum;
 use serde::Deserialize;
 
 #[allow(dead_code)]
 #[derive(Clone, Deserialize, Debug)]
 pub struct MirrorMetadata {
     pub url: String,
-    pub protocol: String,
+    pub protocol: Protocol,
     pub last_sync: Option<chrono::DateTime<chrono::Utc>>,
     pub completion_pct: f32,
     pub delay: Option<usize>,
@@ -30,4 +30,20 @@ pub struct MirrorsStatus {
     pub check_frequency: usize,
     pub urls: Vec<MirrorMetadata>,
     pub version: usize,
+}
+
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, ValueEnum)]
+#[serde(rename_all = "lowercase")]
+pub enum Protocol {
+    Ftp,
+    Http,
+    Https,
+    Rsync,
+}
+
+impl std::fmt::Display for Protocol {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let protocol = format!("{:?}", self).to_lowercase();
+        write!(f, "{}", protocol)
+    }
 }

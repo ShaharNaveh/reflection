@@ -2,6 +2,8 @@ use std::path::PathBuf;
 
 use clap::{Args, Parser, ValueEnum};
 
+use crate::types::Protocol;
+
 /// retrieve and filter a list of the latest Arch Linux mirrors
 #[derive(Parser, Debug)]
 #[command(name = "rflector")] // TODO: Find a better name
@@ -83,27 +85,7 @@ pub struct FilterOpts {
         value_enum,
         value_delimiter = ','
     )]
-    pub protocol: Option<Vec<ProtocolOpts>>,
-}
-
-#[derive(Clone, Debug, ValueEnum)]
-pub enum ProtocolOpts {
-    Ftp,
-    Http,
-    Https,
-    Rsync,
-}
-
-impl std::fmt::Display for ProtocolOpts {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let protocol = match self {
-            Self::Ftp => "ftp",
-            Self::Http => "http",
-            Self::Https => "https",
-            Self::Rsync => "rsync",
-        };
-        write!(f, "{}", protocol)
-    }
+    pub protocol: Option<Vec<Protocol>>,
 }
 
 #[derive(Clone, Debug, ValueEnum)]

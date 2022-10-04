@@ -1,6 +1,6 @@
 use crate::{
-    cli::{FilterOpts, ProtocolOpts},
-    types::MirrorMetadata,
+    cli::FilterOpts,
+    types::{MirrorMetadata, Protocol},
 };
 
 use chrono;
@@ -42,13 +42,7 @@ impl Filters {
         self.0.retain(|x| x.completion_pct >= completion_pct);
     }
 
-    fn filter_protocols(&mut self, protocols: Vec<ProtocolOpts>) {
-        let wanted_protocols = protocols
-            .into_iter()
-            .map(|x| x.to_string())
-            .collect::<Vec<String>>();
-
-        self.0
-            .retain(|x| wanted_protocols.contains(&x.protocol.to_string()));
+    fn filter_protocols(&mut self, protocols: Vec<Protocol>) {
+        self.0.retain(|x| protocols.contains(&x.protocol));
     }
 }
