@@ -96,6 +96,18 @@ pub struct FilterOpts {
         default_value_t = 100
     )]
     pub completion_percent: u8,
+
+    /// Only return mirrors that host ISOs
+    #[arg(long)]
+    pub isos: bool,
+
+    /// Only return mirrors that support IPv4
+    #[arg(long)]
+    pub ipv4: bool,
+
+    /// Only return mirrors that support IPv6
+    #[arg(long)]
+    pub ipv6: bool,
 }
 
 #[derive(Clone, Debug, ValueEnum)]

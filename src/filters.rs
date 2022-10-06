@@ -11,8 +11,26 @@ impl Filters {
     pub fn apply_filters(mut self, filter_opts: &crate::cli::FilterOpts) -> Vec<MirrorMetadata> {
         self.0.retain(|x| x.active); // Get only active mirrors, should we always do this?
 
+        if filter_opts.isos {
+            self.0.retain(|x| x.isos);
+        }
+
+        if filter_opts.ipv4 {
+            self.0.retain(|x| x.ipv4);
+        }
+
+        if filter_opts.ipv6 {
+            self.0.retain(|x| x.ipv6);
+        }
+
+        self.filter_completion_percent(filter_opts.completion_percent);
+
         if let Some(age) = filter_opts.age {
             self.filter_age(age);
+        }
+
+        if let Some(protocol) = &filter_opts.protocol {
+            self.filter_protocols(protocol.to_vec());
         }
 
         if let Some(include_re) = &filter_opts.include {
@@ -22,12 +40,6 @@ impl Filters {
         if let Some(exclude_re) = &filter_opts.exclude {
             self.filter_exclude_re(&exclude_re);
         }
-
-        if let Some(protocol) = &filter_opts.protocol {
-            self.filter_protocols(protocol.to_vec());
-        }
-
-        self.filter_completion_percent(filter_opts.completion_percent);
 
         self.0
     }

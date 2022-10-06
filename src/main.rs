@@ -15,8 +15,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let data: MirrorsStatus = response.json()?;
     dbg!("{:#?}", &data.urls);
 
-    let fmirrors = Filters::new(data.urls).apply_filters(&args.filter_opts);
+    let fmirrors = Filters::new(data.urls.clone()).apply_filters(&args.filter_opts);
     dbg!("{:#?}", &fmirrors);
+
+    dbg!(&data.urls.len(), &fmirrors.len());
 
     let mirrors_url = fmirrors.into_iter().map(|x| x.url).collect::<Vec<String>>();
 
