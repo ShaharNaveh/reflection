@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let response = reqwest::blocking::get(&args.url)?;
     let data: MirrorsStatus = response.json()?;
-    //dbg!("{:#?}", &data);
+    dbg!("{:#?}", &data.urls);
 
     let fmirrors = Filters::new(data.urls).apply_filters(&args.filter_opts);
 
