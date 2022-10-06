@@ -2,6 +2,8 @@ use std::path::PathBuf;
 
 use clap::{Args, Parser, ValueEnum};
 
+use regex::Regex;
+
 use crate::types::Protocol;
 
 /// retrieve and filter a list of the latest Arch Linux mirrors
@@ -67,6 +69,14 @@ pub struct FilterOpts {
     /// Only return mirrors with a reported sync delay of n hours or less, where n is a float. For example. to limit the results to mirrors with a reported delay of 15 minute or less, pass 0.25.
     #[arg(short, long, value_name = "n", hide = true)]
     pub delay: Option<f64>,
+
+    /// Include servers that match <regex>, where <regex> is a *Rust* regular expression.
+    #[arg(short, long, value_name = "regex", value_parser=Regex::new)]
+    pub include: Option<Regex>,
+
+    /// Include servers that match <regex>, where <regex> is a *Rust* regular expression.
+    #[arg(short = 'x', long, value_name = "regex", value_parser=Regex::new)]
+    pub exclude: Option<Regex>,
 
     /// Match one of the given protocols, e.g. "https" or "ftp". Multiple protocols may be selected using commas (e.g. "https,http") or by passing this option multiple times.
     #[arg(

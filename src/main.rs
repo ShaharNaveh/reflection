@@ -16,6 +16,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     dbg!("{:#?}", &data.urls);
 
     let fmirrors = Filters::new(data.urls).apply_filters(&args.filter_opts);
+    dbg!("{:#?}", &fmirrors);
 
     let mirrors_url = fmirrors.into_iter().map(|x| x.url).collect::<Vec<String>>();
 
