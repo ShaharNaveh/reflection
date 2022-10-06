@@ -68,15 +68,6 @@ pub struct FilterOpts {
     #[arg(short, long, value_name = "n", hide = true)]
     pub delay: Option<f64>,
 
-    /// Set the minimum completion percent for the returned mirrors. Check the mirrorstatus webpage for the meaning of this parameter
-    #[arg(
-        long,
-        value_name = "n",
-        value_parser = clap::value_parser!(u8).range(0..101),
-        default_value_t = 100
-    )]
-    pub completion_percent: u8,
-
     /// Match one of the given protocols, e.g. "https" or "ftp". Multiple protocols may be selected using commas (e.g. "https,http") or by passing this option multiple times.
     #[arg(
         short,
@@ -86,6 +77,15 @@ pub struct FilterOpts {
         value_delimiter = ','
     )]
     pub protocol: Option<Vec<Protocol>>,
+
+    /// Set the minimum completion percent for the returned mirrors. Check the mirrorstatus webpage for the meaning of this parameter
+    #[arg(
+        long,
+        value_name = "n",
+        value_parser = clap::value_parser!(u8).range(0..101),
+        default_value_t = 100
+    )]
+    pub completion_percent: u8,
 }
 
 #[derive(Clone, Debug, ValueEnum)]
