@@ -78,6 +78,14 @@ pub struct FilterOpts {
     #[arg(short = 'x', long, value_name = "regex", value_parser=Regex::new)]
     pub exclude: Option<Regex>,
 
+    /// Limit the list to the n most recently synchronized servers
+    #[arg(short, long, value_name = "n")]
+    pub latest: Option<usize>,
+
+    /// Return at most n mirrors
+    #[arg(short, long, value_name = "n")]
+    pub number: Option<usize>,
+
     /// Match one of the given protocols, e.g. "https" or "ftp". Multiple protocols may be selected using commas (e.g. "https,http") or by passing this option multiple times.
     #[arg(
         short,
