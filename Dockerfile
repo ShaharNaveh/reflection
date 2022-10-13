@@ -14,10 +14,10 @@ FROM chef AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt update \
-  && apt install --no-install-suggests --no-install-recommends --yes \
-  libssl-dev \
-  pkg-config
+RUN apt-get update \
+  && apt-get install --no-install-suggests --no-install-recommends --yes \
+  libssl-dev=1.1.1n-0+deb11u3 \
+  pkg-config=0.29.2-1
 
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
