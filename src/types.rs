@@ -1,8 +1,9 @@
 use clap::ValueEnum;
 use regex::Regex;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use std::cmp::Reverse;
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug, Serialize)]
 pub struct MirrorMetadata {
     pub url: String,
     pub protocol: Protocol,
@@ -21,7 +22,7 @@ pub struct MirrorMetadata {
     pub details: String,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MirrorsStatus {
     pub cutoff: usize,
     pub last_check: chrono::DateTime<chrono::Utc>,
@@ -39,14 +40,6 @@ impl MirrorsStatus {
     pub fn filter_by_opts(mut self, filter_opts: &crate::cli::FilterOpts) -> Self {
         // Should we always filter out inactive mirrors?
         self.urls = self.urls.into_iter().filter(|x| x.active).collect();
-
-        if let Some(latest) = filter_opts.latest {
-            self = self.filter_latest(latest);
-        }
-
-        if let Some(number) = filter_opts.number {
-            self = self.filter_number(number);
-        }
 
         if filter_opts.ipv4 {
             self = self.filter_ipv4();
@@ -78,11 +71,29 @@ impl MirrorsStatus {
             self = self.filter_exclude_re(&re);
         }
 
+        if let Some(latest) = filter_opts.latest {
+            self = self.n_latest(latest);
+        }
+
+        if let Some(number) = filter_opts.number {
+            self = self.n_urls(number);
+        }
+
         self
     }
 
-    fn filter_number(mut self, number: usize) -> Self {
+    fn n_urls(mut self, number: usize) -> Self {
         self.urls = self.urls.into_iter().take(number).collect();
+        self
+    }
+
+    fn n_latest(mut self, latest: usize) -> Self {
+        let urls = {
+            let mut data = self.urls.clone();
+            data.sort_unstable_by_key(|x| Reverse(x.last_sync));
+            data
+        };
+        self.urls = urls[..latest].to_vec();
         self
     }
 
@@ -146,16 +157,6 @@ impl MirrorsStatus {
         self
     }
 
-    fn filter_latest(mut self, latest: usize) -> Self {
-        let urls = {
-            let mut data = self.urls.clone();
-            data.sort_unstable_by_key(|x| x.last_sync);
-            data
-        };
-        self.urls = urls.into_iter().take(latest).collect();
-        self
-    }
-
     fn filter_protocols(mut self, protocols: Vec<Protocol>) -> Self {
         self.urls = self
             .urls
@@ -166,7 +167,7 @@ impl MirrorsStatus {
     }
 }
 
-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, ValueEnum)]
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize, ValueEnum)]
 #[serde(rename_all = "lowercase")]
 pub enum Protocol {
     Ftp,

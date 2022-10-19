@@ -32,7 +32,7 @@ pub struct CliOpts {
     #[arg(
         long,
         value_name = "URL",
-        default_value = "https://archlinux.org/mirrors/status/json/"
+        default_value = crate::consts::URL
     )]
     pub url: String,
 

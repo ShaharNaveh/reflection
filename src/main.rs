@@ -1,28 +1,23 @@
 use clap::Parser;
-use reqwest;
 
 mod cli;
+mod consts;
 mod types;
+mod utils;
 
-use crate::{cli::CliOpts, types::MirrorsStatus};
+use crate::cli::CliOpts;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = CliOpts::parse();
-    dbg!("{:?}", &args);
+    let args = dbg!(CliOpts::parse());
 
-    let response = reqwest::blocking::get(&args.url)?;
-    let mirrors_status: MirrorsStatus = response.json()?;
+    let mirrorstatus =
+        utils::get_mirrorstatus(args.connection_timeout, args.cache_timeout, &args.url);
 
-    let fmirrors = mirrors_status.filter_by_opts(&args.filter_opts);
-    println!("{:#?}", &fmirrors);
+    let fmirrors = mirrorstatus.filter_by_opts(&args.filter_opts);
+    //println!("{:#?}", &fmirrors);
 
     let mirrors = fmirrors.urls();
-    println!("{:#?}", &mirrors);
-
-    /*
-    let mirrors_url = fmirrors.into_iter().map(|x| x.url).collect::<Vec<String>>();
-    println!("{:#?}", &mirrors_url);
-    */
+    //println!("{:#?}", &mirrors);
 
     Ok(())
 }
