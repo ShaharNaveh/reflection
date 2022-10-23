@@ -1,8 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
 
-use crate::types::MirrorsStatus;
-
 fn get_cache_file(url: &str) -> PathBuf {
     let cache_dir = dirs::cache_dir().unwrap().join(&crate::consts::NAME);
     fs::create_dir_all(&cache_dir).unwrap();
@@ -20,13 +18,17 @@ fn is_cache_expired(cache_path: &PathBuf, cache_timeout: usize) -> bool {
 }
 
 pub fn get_mirrorstatus(
-    _connection_timeout: usize,
+    connection_timeout: usize,
     cache_timeout: usize,
     url: &str,
-) -> MirrorsStatus {
+) -> crate::types::MirrorsStatus {
     let cache_path = dbg!(get_cache_file(&url));
-    let mirrorstatus: MirrorsStatus = if is_cache_expired(&cache_path, cache_timeout) {
-        let response = reqwest::blocking::get(url).unwrap();
+    let mirrorstatus = if is_cache_expired(&cache_path, cache_timeout) {
+        let client = reqwest::blocking::Client::builder()
+            .timeout(std::time::Duration::from_secs(connection_timeout as u64))
+            .build()
+            .unwrap();
+        let response = client.get(url).send().unwrap();
         let data = response.json().unwrap();
 
         fs::write(&cache_path, serde_json::to_string_pretty(&data).unwrap()).unwrap();

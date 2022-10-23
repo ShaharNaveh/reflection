@@ -13,11 +13,11 @@ use crate::types::Protocol;
 #[command(next_line_help = true)]
 pub struct CliOpts {
     /// The number of seconds to wait before a connection times out
-    #[arg(long, value_name = "n", default_value_t = 5, hide = true)]
+    #[arg(long, value_name = "n", default_value_t = 5)]
     pub connection_timeout: usize,
 
     /// The number of seconds to wait before a download times out
-    #[arg(long, value_name = "n", default_value_t = 5, hide = true)]
+    #[arg(long, value_name = "n", default_value_t = 5)]
     pub download_timeout: usize,
 
     /// Display a table of the distribution of servers by country
@@ -25,7 +25,7 @@ pub struct CliOpts {
     pub list_countries: bool,
 
     /// The cache timeout in seconds for the data retrieved from the Arch Linux Mirror Status API
-    #[arg(long, value_name = "n", default_value_t = 300, hide = true)]
+    #[arg(long, value_name = "n", default_value_t = 300)]
     pub cache_timeout: usize,
 
     /// The URL from which to retrieve the mirror data in JSON format. If different from the default, it must follow the same format
