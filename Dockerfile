@@ -17,8 +17,8 @@ RUN apt-get update \
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
-RUN cargo build --release --bin rflector
+RUN cargo build --release --bin reflection
 
 FROM gcr.io/distroless/cc AS runtime
-COPY --from=builder /app/target/release/rflector /usr/local/bin/
-ENTRYPOINT ["/usr/local/bin/rflector"]
+COPY --from=builder /app/target/release/reflection /usr/local/bin/
+ENTRYPOINT ["/usr/local/bin/reflection"]

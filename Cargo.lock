@@ -807,6 +807,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "reflection"
+version = "0.1.0"
+dependencies = [
+ "base64 0.20.0",
+ "chrono",
+ "clap",
+ "dirs",
+ "regex",
+ "reqwest",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "regex"
 version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -867,20 +881,6 @@ dependencies = [
  "wasm-bindgen-futures",
  "web-sys",
  "winreg",
-]
-
-[[package]]
-name = "rflector"
-version = "0.1.0"
-dependencies = [
- "base64 0.20.0",
- "chrono",
- "clap",
- "dirs",
- "regex",
- "reqwest",
- "serde",
- "serde_json",
 ]
 
 [[package]]

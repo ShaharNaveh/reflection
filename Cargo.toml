@@ -1,12 +1,12 @@
 [package]
-name = "rflector"
+name = "reflection"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 base64 = "0.20"
 chrono = { version = "0.4", features = ["serde"] }
-clap = { version = "4.0", features = ["derive", "wrap_help"] }
+clap = { version = "4.0", features = ["cargo", "derive", "wrap_help"] }
 dirs = "4.0"
 regex = "1.7"
 reqwest = { version = "0.11", features = ["blocking", "json"] }

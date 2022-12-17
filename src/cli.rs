@@ -8,9 +8,7 @@ use crate::types::Protocol;
 
 /// retrieve and filter a list of the latest Arch Linux mirrors
 #[derive(Parser, Debug)]
-#[command(name = "rflector")] // TODO: Find a better name
-#[command(version = "0.0.1")]
-#[command(next_line_help = true)]
+#[command(name = "reflection", version= clap::crate_version!(), next_line_help=true)]
 pub struct CliOpts {
     /// The number of seconds to wait before a connection times out
     #[arg(long, value_name = "n", default_value_t = 5)]
