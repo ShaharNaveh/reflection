@@ -1,4 +1,4 @@
-ARG BASE_IMAGE="docker.io/library/rust:1.64.0-slim-bullseye"
+ARG BASE_IMAGE="docker.io/library/rust:1.66.0-slim-bullseye"
 
 FROM $BASE_IMAGE as chef
 RUN cargo install cargo-chef --version 0.1.50
