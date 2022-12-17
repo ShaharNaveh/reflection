@@ -1,10 +1,16 @@
 use std::fs;
 use std::path::PathBuf;
 
+const BASE64_URL_SAFE_ENGINE: base64::engine::fast_portable::FastPortable =
+    base64::engine::fast_portable::FastPortable::from(
+        &base64::alphabet::URL_SAFE,
+        base64::engine::fast_portable::NO_PAD,
+    );
+
 fn get_cache_file(url: &str) -> PathBuf {
     let cache_dir = dirs::cache_dir().unwrap().join(&crate::consts::NAME);
     fs::create_dir_all(&cache_dir).unwrap();
-    let name = base64::encode_config(&url, base64::URL_SAFE);
+    let name = base64::encode_engine(&url, &BASE64_URL_SAFE_ENGINE);
     cache_dir.join(&name).with_extension("json")
 }
 
