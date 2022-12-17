@@ -1,7 +1,7 @@
 ARG BASE_IMAGE="docker.io/library/rust:1.64.0-slim-bullseye"
 
 FROM $BASE_IMAGE as chef
-RUN cargo install cargo-chef --version 0.1.45
+RUN cargo install cargo-chef --version 0.1.50
 WORKDIR /app/
 
 FROM chef AS planner
